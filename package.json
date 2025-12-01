@@ -1,0 +1,29 @@
+{
+    "name": "three-game-components",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "files": ["dist"],
+    "keywords": [
+        "three",
+        "cannon-es"
+    ],
+    "exports": {
+        "./physics": "./dist/physics.js"
+    },
+    "scripts": {
+        "build": "vite build",
+        "prepublishOnly": "npm run build"
+    },
+    "devDependencies": {
+        "@types/three": "^0.181.0",
+        "vite": "^7.2.2",
+        "vite-plugin-dts": "^4.5.4"
+    },
+    "peerDependencies": {
+        "cannon-es": "^0.20.0",
+        "three": "^0.181.2"
+    }
+}
