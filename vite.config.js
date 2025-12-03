@@ -8,24 +8,30 @@ export default defineConfig({
         lib: {
             entry: {
                 physics: resolve(__dirname, './src/physics/index.ts'),
+                animations: resolve(__dirname, './src/animations/index.ts'),
             },
             formats: ['es'],
             
         },
         rollupOptions: {
-            external: ['three', 'cannon-es']
+            external: [
+                'three', 
+                'cannon-es', 
+                'three/addons/utils/SkeletonUtils', 
+                '@alexfdr/three-game-core'
+            ],
+            output: {
+                entryFileNames: ({name}) => `${name}/[name].js`
+            }
         },
         reportCompressedSize: false,
     },
     plugins: [
         dts({ 
             exclude: ['node_modules/**', '**/index.ts'],
-            outDir: './dist/types'
-            // rollupTypes: false, 
+            outDir: './dist/',
+            // rollupTypes: true, 
             // insertTypesEntry: true, 
-            // rollupOptions: {
-            //     localBuild: true,
-            // },
         })
     ]
 })
