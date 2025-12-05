@@ -9,6 +9,7 @@ export default defineConfig({
             entry: {
                 physics: resolve(__dirname, './src/physics/index.ts'),
                 animations: resolve(__dirname, './src/animations/index.ts'),
+                tweens: resolve(__dirname, './src/tweens/index.ts'),
             },
             formats: ['es'],
             
@@ -18,7 +19,8 @@ export default defineConfig({
                 'three', 
                 'cannon-es', 
                 'three/addons/utils/SkeletonUtils', 
-                '@alexfdr/three-game-core'
+                '@alexfdr/three-game-core',
+                '@tweenjs/tween.js'
             ],
             output: {
                 entryFileNames: ({name}) => `${name}/[name].js`
