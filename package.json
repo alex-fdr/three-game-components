@@ -1,5 +1,5 @@
 {
-    "name": "three-game-components",
+    "name": "@alexfdr/three-game-components",
     "version": "1.0.0",
     "description": "",
     "author": "",
@@ -10,7 +10,8 @@
     ],
     "keywords": [
         "three",
-        "cannon-es"
+        "cannon-es",
+        "tween.js"
     ],
     "exports": {
         "./physics": {
@@ -20,6 +21,10 @@
         "./animations": {
             "import": "./dist/animations.js",
             "types": "./dist/animations.d.ts"
+        },
+        "./tweens": {
+            "import": "./dist/tweens.js",
+            "types": "./dist/tweens.d.ts"
         }
     },
     "scripts": {
@@ -28,14 +33,16 @@
     },
     "devDependencies": {
         "@alexfdr/three-game-core": "^1.0.21",
+        "@tweenjs/tween.js": "^22.0.0",
         "@types/three": "^0.181.0",
         "three": "^0.181.2",
         "vite": "^7.2.2",
         "vite-plugin-dts": "^4.5.4"
     },
     "peerDependencies": {
+        "@alexfdr/three-game-core": "^1.0.21",
+        "@tweenjs/tween.js": "^22.0.0",
         "cannon-es": "^0.20.0",
-        "three": "^0.181.2",
-        "@alexfdr/three-game-core": "^1.0.21"
+        "three": "^0.181.2"
     }
 }
