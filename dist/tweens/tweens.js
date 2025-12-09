@@ -1,60 +1,55 @@
-var w = Object.defineProperty;
-var f = (c, e, t) => e in c ? w(c, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : c[e] = t;
-var I = (c, e, t) => f(c, typeof e != "symbol" ? e + "" : e, t);
-import { Easing as a, Group as p, Tween as y } from "@tweenjs/tween.js";
-import { Mesh as m, Color as O } from "three";
-const x = {
-  linear: a.Linear.None,
-  quad: a.Quadratic.InOut,
-  quadIn: a.Quadratic.In,
-  quadOut: a.Quadratic.Out,
-  cubic: a.Cubic.InOut,
-  cubicIn: a.Cubic.In,
-  cubicOut: a.Cubic.Out,
-  quar: a.Quartic.InOut,
-  quarIn: a.Quartic.In,
-  quarOut: a.Quartic.Out,
-  quint: a.Quintic.InOut,
-  quintIn: a.Quintic.In,
-  quintOut: a.Quintic.Out,
-  sine: a.Sinusoidal.InOut,
-  sineIn: a.Sinusoidal.In,
-  sineOut: a.Sinusoidal.Out,
-  exp: a.Exponential.InOut,
-  expIn: a.Exponential.In,
-  expOut: a.Exponential.Out,
-  circ: a.Circular.InOut,
-  circIn: a.Circular.In,
-  circOut: a.Circular.Out,
-  elastic: a.Elastic.InOut,
-  elasticIn: a.Elastic.In,
-  elasticOut: a.Elastic.Out,
-  back: a.Back.InOut,
-  backIn: a.Back.In,
-  backOut: a.Back.Out,
-  bounce: a.Bounce.InOut,
-  bounceIn: a.Bounce.In,
-  bounceOut: a.Bounce.Out
+import { Easing as n, Group as m, Tween as w } from "@tweenjs/tween.js";
+import { Mesh as O, Color as d } from "three";
+const f = {
+  linear: n.Linear.None,
+  quad: n.Quadratic.InOut,
+  quadIn: n.Quadratic.In,
+  quadOut: n.Quadratic.Out,
+  cubic: n.Cubic.InOut,
+  cubicIn: n.Cubic.In,
+  cubicOut: n.Cubic.Out,
+  quar: n.Quartic.InOut,
+  quarIn: n.Quartic.In,
+  quarOut: n.Quartic.Out,
+  quint: n.Quintic.InOut,
+  quintIn: n.Quintic.In,
+  quintOut: n.Quintic.Out,
+  sine: n.Sinusoidal.InOut,
+  sineIn: n.Sinusoidal.In,
+  sineOut: n.Sinusoidal.Out,
+  exp: n.Exponential.InOut,
+  expIn: n.Exponential.In,
+  expOut: n.Exponential.Out,
+  circ: n.Circular.InOut,
+  circIn: n.Circular.In,
+  circOut: n.Circular.Out,
+  elastic: n.Elastic.InOut,
+  elasticIn: n.Elastic.In,
+  elasticOut: n.Elastic.Out,
+  back: n.Back.InOut,
+  backIn: n.Back.In,
+  backOut: n.Back.Out,
+  bounce: n.Bounce.InOut,
+  bounceIn: n.Bounce.In,
+  bounceOut: n.Bounce.Out
 };
-class b {
-  constructor() {
-    I(this, "tweens", []);
-    I(this, "group", new p());
-  }
-  add(e, t = 300, {
-    easing: n = "sine",
+class h {
+  tweens = [];
+  group = new m();
+  add(e, a = 300, {
+    easing: t = "sine",
     autostart: u = !0,
     delay: i = 0,
     repeat: o = 0,
     repeatDelay: s = 0,
-    yoyo: l = !1,
-    to: d,
-    onComplete: h
+    yoyo: r = !1,
+    to: l,
+    onComplete: I
   } = {}) {
-    if (!d)
+    if (!l)
       throw new Error("no destination provided");
-    const r = new y(e).to(d, t).easing(x[n]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(s).yoyo(l);
-    return u && r.start(), h && r.onComplete(h), this.tweens.push(r), this.group.add(r), r;
+    const c = new w(e).to(l, a).easing(f[t]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(s).yoyo(r);
+    return u && c.start(), I && c.onComplete(I), this.tweens.push(c), this.group.add(c), c;
   }
   remove(e) {
     this.group.remove(e), this.tweens.splice(this.tweens.indexOf(e), 1);
@@ -71,116 +66,113 @@ class b {
     this.group.update(e);
   }
   wait(e) {
-    const t = { value: 0 }, n = { value: 1 }, u = this.add(t, e, {
+    const a = { value: 0 }, t = { value: 1 }, u = this.add(a, e, {
       easing: "linear",
       autostart: !0,
-      to: n
+      to: t
     });
     return new Promise((i) => {
       u.onComplete(() => i());
     });
   }
-  dummy(e, t) {
+  dummy(e, a) {
     return this.add({ value: 0 }, e, {
-      ...t,
+      ...a,
       easing: "linear",
       to: { value: 1 }
     });
   }
-  fadeIn(e, t = 300, n) {
+  fadeIn(e, a = 300, t) {
     e.alpha = 0;
-    const u = this.add(e, t, {
-      ...n,
+    const u = this.add(e, a, {
+      ...t,
       to: { alpha: 1 }
     });
-    return (n.autostart === !1 || n.delay) && u.onStart(() => {
+    return (t.autostart === !1 || t.delay) && u.onStart(() => {
       e.alpha = 0;
     }), u;
   }
-  fadeOut(e, t = 200, n) {
-    return this.add(e, t, {
-      ...n,
+  fadeOut(e, a = 200, t) {
+    return this.add(e, a, {
+      ...t,
       to: { alpha: 0 }
     });
   }
-  zoomIn(e, t = 0, n = 300, u) {
+  zoomIn(e, a = 0, t = 300, u) {
     const i = e.scale.x || 1;
-    return e.scale.x = t, e.scale.y = t, this.add(e.scale, n, {
+    return e.scale.x = a, e.scale.y = a, this.add(e.scale, t, {
       ...u,
       to: { x: i, y: i }
     });
   }
-  zoomOut(e, t = 0, n = 300, u = {}) {
-    return this.add(e.scale, n, {
+  zoomOut(e, a = 0, t = 300, u = {}) {
+    return this.add(e.scale, t, {
       ...u,
-      to: { x: t, y: t }
+      to: { x: a, y: a }
     });
   }
-  pulse(e, t = 300, n) {
-    const u = n.scaleTo || 1.1, i = e.scale;
-    return this.add(e.scale, t, {
-      ...n,
+  pulse(e, a = 300, t) {
+    const u = t.scaleTo || 1.1, i = e.scale;
+    return this.add(e.scale, a, {
+      ...t,
       yoyo: !0,
-      repeat: n.repeat || 1,
+      repeat: t.repeat || 1,
       to: { x: i.x * u, y: i.y * u }
     });
   }
-  fadeIn3(e, t, n) {
+  fadeIn3(e, a, t) {
     if (!e.material) {
       let i;
       if (e.traverse((o) => {
-        o instanceof m && (i = this.fadeIn3(o, t, n));
+        o instanceof O && (i = this.fadeIn3(o, a, t));
       }), !i)
         throw new Error("cannot create a tween, no nested mesh found");
       return i;
     }
     const u = e.material.opacity || 1;
-    return e.material.transparent = !0, e.material.opacity = 0, this.add(e.material, t, {
-      ...n,
+    return e.material.transparent = !0, e.material.opacity = 0, this.add(e.material, a, {
+      ...t,
       to: { opacity: u }
     });
   }
-  fadeOut3(e, t, n) {
+  fadeOut3(e, a, t) {
     if (!e.material) {
       let u;
       if (e.traverse((i) => {
-        i instanceof m && (u = this.fadeOut3(i, t, n));
+        i instanceof O && (u = this.fadeOut3(i, a, t));
       }), !u)
         throw new Error("cannot create a tween, no nested mesh found");
       return u;
     }
-    return e.material.transparent = !0, this.add(e.material, t, {
-      ...n,
+    return e.material.transparent = !0, this.add(e.material, a, {
+      ...t,
       to: { opacity: 0 }
     });
   }
-  zoomIn3(e, t, n) {
-    const { x: u, y: i, z: o } = e.scale, s = n.scaleFrom;
-    return e.scale.multiplyScalar(s), this.add(e.scale, t, {
-      ...n,
+  zoomIn3(e, a, t) {
+    const { x: u, y: i, z: o } = e.scale, s = t.scaleFrom;
+    return e.scale.multiplyScalar(s), this.add(e.scale, a, {
+      ...t,
       to: { x: u, y: i, z: o }
     });
   }
-  pulse3(e, t = 300, n) {
-    const u = n.scaleTo || 1.1, i = e.scale;
-    return this.add(e.scale, t, {
-      ...n,
+  pulse3(e, a = 300, t) {
+    const u = t.scaleTo || 1.1, i = e.scale;
+    return this.add(e.scale, a, {
+      ...t,
       easing: "cubic",
       yoyo: !0,
       to: { x: i.x * u, y: i.y * u, z: i.z * u }
     });
   }
-  switchColor3(e, t, n, u) {
-    const i = new O(e.material.color), o = new O(t), s = new O(), l = this.dummy(n, { ...u, easing: "sineIn" });
-    return l.onUpdate((d) => {
-      s.copy(i), s.lerp(o, d.value), e.material.color.setHex(s.getHex());
-    }), l;
+  switchColor3(e, a, t, u) {
+    const i = new d(e.material.color), o = new d(a), s = new d(), r = this.dummy(t, { ...u, easing: "sineIn" });
+    return r.onUpdate((l) => {
+      s.copy(i), s.lerp(o, l.value), e.material.color.setHex(s.getHex());
+    }), r;
   }
 }
-const C = new b();
-C.add({ alpha: 1 }, 500, {
-  to: { alpha: 1 }
-});
+const b = new h();
 export {
-  C as tweens
+  b as tweens
 };

@@ -1,31 +1,26 @@
-var u = Object.defineProperty;
-var c = (o, i, e) => i in o ? u(o, i, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[i] = e;
-var m = (o, i, e) => c(o, typeof i != "symbol" ? i + "" : i, e);
-import { LoopRepeat as l, LoopOnce as x, AnimationMixer as y } from "three";
-import { assets as d } from "@alexfdr/three-game-core";
-import * as L from "three/addons/utils/SkeletonUtils";
-class w {
-  constructor() {
-    m(this, "mixers", /* @__PURE__ */ new Map());
-    m(this, "animationsList", []);
-    m(this, "enabled", !0);
-  }
+import { LoopRepeat as c, LoopOnce as h, AnimationMixer as l } from "three";
+import { assets as a } from "@alexfdr/three-game-core";
+import * as f from "three/addons/utils/SkeletonUtils";
+class u {
+  mixers = /* @__PURE__ */ new Map();
+  animationsList = [];
+  enabled = !0;
   add(i, e, s = !1, n = 1) {
     const t = this.addMixer(i).clipAction(e);
-    return t.timeScale = n, t.clampWhenFinished = !0, t.setLoop(s ? l : x, 1 / 0), this.animationsList.push(t), t;
+    return t.timeScale = n, t.clampWhenFinished = !0, t.setLoop(s ? c : h, 1 / 0), this.animationsList.push(t), t;
   }
   addMixer(i) {
-    this.mixers.has(i.uuid) || this.mixers.set(i.uuid, new y(i));
+    this.mixers.has(i.uuid) || this.mixers.set(i.uuid, new l(i));
     const e = this.mixers.get(i.uuid);
     if (!e)
       throw new Error("no animation mixer found");
     return e;
   }
   onAnimationComplete(i, e, s = !0) {
-    const n = i.getMixer(), r = () => {
-      s && n.removeEventListener("finished", r), e == null || e();
+    const n = i.getMixer(), o = () => {
+      s && n.removeEventListener("finished", o), e?.();
     };
-    n.addEventListener("finished", r);
+    n.addEventListener("finished", o);
   }
   update(i) {
     if (this.enabled)
@@ -40,22 +35,22 @@ class w {
       keys: []
     };
     for (const { key: s } of i) {
-      const n = d.models.get(s);
-      n.getObjectByProperty("type", "SkinnedMesh") && (e.mesh = L.clone(n));
+      const n = a.models.get(s);
+      n.getObjectByProperty("type", "SkinnedMesh") && (e.mesh = f.clone(n));
     }
     if (!e.mesh)
       throw new Error("could not parse animations data, no base mesh found");
     for (const s of i) {
-      const { key: n } = s, r = d.models.getAnimations(n);
-      if (r.length) {
-        const { name: t = n, loop: p = !1, timeScale: h = 1, clipId: f = 0 } = s, a = this.add(e.mesh, r[f], p, h);
-        e.animationsMap.set(t, a), e.animationsList.push(a), e.keys.push(t);
+      const { key: n } = s, o = a.models.getAnimations(n);
+      if (o.length) {
+        const { name: t = n, loop: m = !1, timeScale: d = 1, clipId: p = 0 } = s, r = this.add(e.mesh, o[p], m, d);
+        e.animationsMap.set(t, r), e.animationsList.push(r), e.keys.push(t);
       }
     }
     return e;
   }
 }
-const E = new w();
+const w = new u();
 export {
-  E as animations
+  w as animations
 };

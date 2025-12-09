@@ -1,15 +1,12 @@
-var l = Object.defineProperty;
-var a = (e, t, s) => t in e ? l(e, t, { enumerable: !0, configurable: !0, writable: !0, value: s }) : e[t] = s;
-var i = (e, t, s) => a(e, typeof t != "symbol" ? t + "" : t, s);
-import { World as r, NaiveBroadphase as o } from "cannon-es";
-class d {
+import { World as e, NaiveBroadphase as i } from "cannon-es";
+class r {
+  timeStep = 1 / 60;
+  lastCallTime = 0;
+  maxSubSteps = 3;
+  world;
   constructor(t) {
-    i(this, "timeStep", 1 / 60);
-    i(this, "lastCallTime", 0);
-    i(this, "maxSubSteps", 3);
-    i(this, "world");
-    const { gravity: s = { x: 0, y: 0, z: 0 } } = t;
-    this.world = new r(), this.world.broadphase = new o(), this.world.gravity.set(s.x, s.y, s.z);
+    const { gravity: s = { x: 0, y: -10, z: 0 } } = t;
+    this.world = new e(), this.world.broadphase = new i(), this.world.gravity.set(s.x, s.y, s.z);
   }
   update(t) {
     if (!this.lastCallTime) {
@@ -21,5 +18,5 @@ class d {
   }
 }
 export {
-  d as Physics
+  r as Physics
 };
