@@ -1,0 +1,169 @@
+import { AnimationAction } from 'three';
+import { AnimationClip } from 'three';
+import { AnimationMixer } from 'three';
+import { Color } from 'three';
+import { ColorRepresentation } from 'three';
+import { Group } from '@tweenjs/tween.js';
+import { Material } from 'three';
+import { Object3D } from 'three';
+import { Tween } from '@tweenjs/tween.js';
+import { Vector3 } from 'three';
+import { Vector3Like } from 'three';
+import { World } from 'cannon-es';
+
+declare type AddProps<T> = Partial<TweenProps & {
+    to: ToProps<T>;
+}>;
+
+declare type AlphaProperty = {
+    alpha: number;
+};
+
+export declare type AnimationData = {
+    key: string;
+    name: string;
+    loop?: boolean;
+    timeScale?: number;
+    clipId?: number;
+};
+
+export declare const animations: AnimationSystem;
+
+declare class AnimationSystem {
+    mixers: Map<string, AnimationMixer>;
+    animationsList: AnimationAction[];
+    enabled: boolean;
+    add(targetMesh: Object3D, animationSource: AnimationClip, loop?: boolean, timeScale?: number): AnimationAction;
+    addMixer(target: Object3D): AnimationMixer | never;
+    onAnimationComplete(anim: AnimationAction, callback: () => void, once?: boolean): void;
+    update(dt: number): void;
+    parse(animationsMap: AnimationData[]): ParsedAnimationData<AnimationData> | never;
+}
+
+declare type CustomTween = Tween<any>;
+
+declare const mapping: {
+    linear: (amount: number) => number;
+    quad: (amount: number) => number;
+    quadIn: (amount: number) => number;
+    quadOut: (amount: number) => number;
+    cubic: (amount: number) => number;
+    cubicIn: (amount: number) => number;
+    cubicOut: (amount: number) => number;
+    quar: (amount: number) => number;
+    quarIn: (amount: number) => number;
+    quarOut: (amount: number) => number;
+    quint: (amount: number) => number;
+    quintIn: (amount: number) => number;
+    quintOut: (amount: number) => number;
+    sine: (amount: number) => number;
+    sineIn: (amount: number) => number;
+    sineOut: (amount: number) => number;
+    exp: (amount: number) => number;
+    expIn: (amount: number) => number;
+    expOut: (amount: number) => number;
+    circ: (amount: number) => number;
+    circIn: (amount: number) => number;
+    circOut: (amount: number) => number;
+    elastic: (amount: number) => number;
+    elasticIn: (amount: number) => number;
+    elasticOut: (amount: number) => number;
+    back: (amount: number) => number;
+    backIn: (amount: number) => number;
+    backOut: (amount: number) => number;
+    bounce: (amount: number) => number;
+    bounceIn: (amount: number) => number;
+    bounceOut: (amount: number) => number;
+};
+
+declare type MaterialColorProperty = Object3D & {
+    material: Material & {
+        color: Color;
+    };
+};
+
+declare type MaterialProperty = Object3D & {
+    material?: Material;
+};
+
+declare type ParsedAnimationData<T extends {
+    key: string;
+}> = {
+    mesh: Object3D | null;
+    anims: Record<T['key'], AnimationAction>;
+    keys: T['key'][];
+};
+
+export declare class Physics {
+    timeStep: number;
+    lastCallTime: number;
+    maxSubSteps: number;
+    world: World;
+    constructor(config: PhysicsProps);
+    update(time: number): void;
+}
+
+export declare type PhysicsProps = {
+    gravity?: Vector3Like;
+};
+
+declare type ScaleProperty = {
+    scale: {
+        x: number;
+        y: number;
+        z?: number;
+    };
+};
+
+declare type ToProps<T> = Partial<Record<keyof T, number | string>>;
+
+declare type TweenProps = {
+    easing: keyof typeof mapping;
+    autostart: boolean;
+    delay: number;
+    repeat: number;
+    repeatDelay: number;
+    yoyo: boolean;
+    to: unknown;
+    onComplete: (object: unknown) => void;
+};
+
+export declare const tweens: TweensFactory;
+
+declare class TweensFactory {
+    tweens: CustomTween[];
+    group: Group;
+    add<T extends Record<string, any>>(target: T, time?: number, { easing, autostart, delay, repeat, repeatDelay, yoyo, to, onComplete, }?: AddProps<T>): CustomTween;
+    remove(tween: CustomTween): void;
+    pause(): void;
+    resume(): void;
+    update(time: number): void;
+    wait(time: number): Promise<void>;
+    dummy(time: number, props: Partial<TweenProps>): CustomTween;
+    fadeIn(target: AlphaProperty, time?: number, props?: Partial<TweenProps>): CustomTween;
+    fadeOut(target: AlphaProperty, time: number | undefined, props: TweenProps): CustomTween;
+    zoomIn(target: ScaleProperty, time?: number, props?: Partial<TweenProps> & {
+        scaleFrom: number;
+    }): CustomTween;
+    zoomOut(target: ScaleProperty, time?: number, props?: Partial<TweenProps> & {
+        scaleTo: number;
+    }): CustomTween;
+    pulse(target: ScaleProperty, time?: number, props?: Partial<TweenProps> & {
+        scaleTo: number;
+    }): CustomTween;
+    fadeIn3(target: MaterialProperty, time: number, props: Partial<TweenProps>): CustomTween | never;
+    fadeOut3(target: MaterialProperty, time: number, props: Partial<TweenProps>): CustomTween | never;
+    zoomIn3(target: {
+        scale: Vector3;
+    }, time: number, props?: Partial<TweenProps> & {
+        scaleFrom: number;
+    }): CustomTween;
+    pulse3(target: {
+        scale: Vector3;
+    }, time?: number, props?: Partial<TweenProps> & {
+        scaleTo: number;
+    }): CustomTween;
+    switchColor3(target: MaterialColorProperty, color: ColorRepresentation, time: number, props: Partial<TweenProps>): CustomTween;
+}
+
+export { }
