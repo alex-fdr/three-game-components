@@ -12,7 +12,7 @@ export class Physics {
     world: World;
 
     constructor(config: PhysicsProps) {
-        const { gravity = { x: 0, y: 0, z: 0 } } = config;
+        const { gravity = { x: 0, y: -10, z: 0 } } = config;
 
         this.world = new World();
         this.world.broadphase = new NaiveBroadphase();
