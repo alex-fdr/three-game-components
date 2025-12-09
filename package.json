@@ -1,6 +1,6 @@
 {
     "name": "@alexfdr/three-game-components",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "",
     "author": "",
     "license": "ISC",
@@ -15,16 +15,16 @@
     ],
     "exports": {
         "./physics": {
-            "import": "./dist/physics.js",
-            "types": "./dist/physics.d.ts"
+            "import": "./dist/physics/physics.js",
+            "types": "./dist/physics/physics.d.ts"
         },
         "./animations": {
-            "import": "./dist/animations.js",
-            "types": "./dist/animations.d.ts"
+            "import": "./dist/animations/animations.js",
+            "types": "./dist/animations/animations.d.ts"
         },
         "./tweens": {
-            "import": "./dist/tweens.js",
-            "types": "./dist/tweens.d.ts"
+            "import": "./dist/tweens/tweens.js",
+            "types": "./dist/tweens/tweens.d.ts"
         }
     },
     "scripts": {
