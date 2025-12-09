@@ -1,6 +1,6 @@
 {
     "name": "@alexfdr/three-game-components",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "",
     "author": "",
     "license": "ISC",
@@ -13,20 +13,8 @@
         "cannon-es",
         "tween.js"
     ],
-    "exports": {
-        "./physics": {
-            "import": "./dist/physics/physics.js",
-            "types": "./dist/physics/physics.d.ts"
-        },
-        "./animations": {
-            "import": "./dist/animations/animations.js",
-            "types": "./dist/animations/animations.d.ts"
-        },
-        "./tweens": {
-            "import": "./dist/tweens/tweens.js",
-            "types": "./dist/tweens/tweens.d.ts"
-        }
-    },
+    "main": "./dist/three-game-components.js",
+    "types": "./dist/three-game-components.d.ts",
     "scripts": {
         "build": "vite build",
         "prepublishOnly": "npm run build"
