@@ -17,11 +17,10 @@ export type AnimationData = {
     clipId?: number;
 };
 
-export type ParsedAnimationData = {
+export type ParsedAnimationData<T extends { key: string }> = {
     mesh: Object3D | null;
-    animationsMap: Map<string, AnimationAction>;
-    animationsList: AnimationAction[];
-    keys: string[];
+    anims: Record<T['key'], AnimationAction>;
+    keys: T['key'][];
 };
 
 export class AnimationSystem {
@@ -77,11 +76,11 @@ export class AnimationSystem {
         }
     }
 
-    parse(animationsMap: AnimationData[]): ParsedAnimationData | never {
-        const result: ParsedAnimationData = {
+    parse(animationsMap: AnimationData[]): ParsedAnimationData<AnimationData> | never {
+        const result: ParsedAnimationData<AnimationData> = {
             mesh: null,
-            animationsMap: new Map(),
-            animationsList: [],
+            anims: {},
+            // animationsList: [],
             keys: [],
         };
 
@@ -104,8 +103,8 @@ export class AnimationSystem {
             if (anims.length) {
                 const { name = key, loop = false, timeScale = 1, clipId = 0 } = props;
                 const anim = this.add(result.mesh, anims[clipId], loop, timeScale);
-                result.animationsMap.set(name, anim);
-                result.animationsList.push(anim);
+                result.anims[name] = anim;
+                // result.animationsList.push(anim);
                 result.keys.push(name);
             }
         }
@@ -113,4 +112,3 @@ export class AnimationSystem {
         return result;
     }
 }
-
