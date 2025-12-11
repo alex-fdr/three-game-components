@@ -94,14 +94,17 @@ declare type ParsedAnimationData<T extends {
     keys: T['key'][];
 };
 
-export declare class Physics {
+declare class Physics {
     timeStep: number;
     lastCallTime: number;
     maxSubSteps: number;
     world: World;
-    constructor(config: PhysicsProps);
+    constructor();
+    init(config: PhysicsProps): void;
     update(time: number): void;
 }
+
+export declare const physics: Physics;
 
 export declare type PhysicsProps = {
     gravity?: Vector3Like;

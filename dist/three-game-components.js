@@ -1,23 +1,18 @@
-var y = Object.defineProperty;
-var x = (c, e, t) => e in c ? y(c, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : c[e] = t;
-var r = (c, e, t) => x(c, typeof e != "symbol" ? e + "" : e, t);
-import { LoopRepeat as I, LoopOnce as O, AnimationMixer as C, Mesh as p, Color as f } from "three";
-import { assets as w } from "@alexfdr/three-game-core";
-import * as S from "three/addons/utils/SkeletonUtils";
-import { World as T, NaiveBroadphase as b } from "cannon-es";
-import { Easing as a, Group as v, Tween as E } from "@tweenjs/tween.js";
-class z {
-  constructor() {
-    r(this, "mixers", /* @__PURE__ */ new Map());
-    r(this, "animationsList", []);
-    r(this, "enabled", !0);
-  }
+import { LoopRepeat as w, LoopOnce as y, AnimationMixer as x, Mesh as p, Color as m } from "three";
+import { assets as f } from "@alexfdr/three-game-core";
+import * as I from "three/addons/utils/SkeletonUtils";
+import { World as O, NaiveBroadphase as b } from "cannon-es";
+import { Easing as a, Group as C, Tween as S } from "@tweenjs/tween.js";
+class T {
+  mixers = /* @__PURE__ */ new Map();
+  animationsList = [];
+  enabled = !0;
   add(e, t, n = !1, s = 1) {
     const o = this.addMixer(e).clipAction(t);
-    return o.timeScale = s, o.clampWhenFinished = !0, o.setLoop(n ? I : O, 1 / 0), this.animationsList.push(o), o;
+    return o.timeScale = s, o.clampWhenFinished = !0, o.setLoop(n ? w : y, 1 / 0), this.animationsList.push(o), o;
   }
   addMixer(e) {
-    this.mixers.has(e.uuid) || this.mixers.set(e.uuid, new C(e));
+    this.mixers.has(e.uuid) || this.mixers.set(e.uuid, new x(e));
     const t = this.mixers.get(e.uuid);
     if (!t)
       throw new Error("no animation mixer found");
@@ -25,7 +20,7 @@ class z {
   }
   onAnimationComplete(e, t, n = !0) {
     const s = e.getMixer(), i = () => {
-      n && s.removeEventListener("finished", i), t == null || t();
+      n && s.removeEventListener("finished", i), t?.();
     };
     s.addEventListener("finished", i);
   }
@@ -42,30 +37,33 @@ class z {
       keys: []
     };
     for (const { key: n } of e) {
-      const s = w.models.get(n);
-      s.getObjectByProperty("type", "SkinnedMesh") && (t.mesh = S.clone(s));
+      const s = f.models.get(n);
+      s.getObjectByProperty("type", "SkinnedMesh") && (t.mesh = I.clone(s));
     }
     if (!t.mesh)
       throw new Error("could not parse animations data, no base mesh found");
     for (const n of e) {
-      const { key: s } = n, i = w.models.getAnimations(s);
+      const { key: s } = n, i = f.models.getAnimations(s);
       if (i.length) {
-        const { name: o = s, loop: u = !1, timeScale: l = 1, clipId: d = 0 } = n, h = this.add(t.mesh, i[d], u, l);
-        t.anims[o] = h, t.keys.push(o);
+        const { name: o = s, loop: r = !1, timeScale: c = 1, clipId: u = 0 } = n, d = this.add(t.mesh, i[u], r, c);
+        t.anims[o] = d, t.keys.push(o);
       }
     }
     return t;
   }
 }
-const A = new z();
-class P {
-  constructor(e) {
-    r(this, "timeStep", 1 / 60);
-    r(this, "lastCallTime", 0);
-    r(this, "maxSubSteps", 3);
-    r(this, "world");
+const B = new T();
+class v {
+  timeStep = 1 / 60;
+  lastCallTime = 0;
+  maxSubSteps = 3;
+  world;
+  constructor() {
+    this.world = new O(), this.world.broadphase = new b();
+  }
+  init(e) {
     const { gravity: t = { x: 0, y: -10, z: 0 } } = e;
-    this.world = new T(), this.world.broadphase = new b(), this.world.gravity.set(t.x, t.y, t.z);
+    this.world.gravity.set(t.x, t.y, t.z);
   }
   update(e) {
     if (!this.lastCallTime) {
@@ -76,7 +74,7 @@ class P {
     this.world.step(this.timeStep, t, this.maxSubSteps), this.lastCallTime = e;
   }
 }
-const q = {
+const F = new v(), E = {
   linear: a.Linear.None,
   quad: a.Quadratic.InOut,
   quadIn: a.Quadratic.In,
@@ -109,25 +107,23 @@ const q = {
   bounceIn: a.Bounce.In,
   bounceOut: a.Bounce.Out
 };
-class L {
-  constructor() {
-    r(this, "tweens", []);
-    r(this, "group", new v());
-  }
+class k {
+  tweens = [];
+  group = new C();
   add(e, t = 300, {
     easing: n = "sine",
     autostart: s = !0,
     delay: i = 0,
     repeat: o = 0,
-    repeatDelay: u = 0,
-    yoyo: l = !1,
-    to: d,
-    onComplete: h
+    repeatDelay: r = 0,
+    yoyo: c = !1,
+    to: u,
+    onComplete: d
   } = {}) {
-    if (!d)
+    if (!u)
       throw new Error("no destination provided");
-    const m = new E(e).to(d, t).easing(q[n]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(u).yoyo(l);
-    return s && m.start(), h && m.onComplete(h), this.tweens.push(m), this.group.add(m), m;
+    const l = new S(e).to(u, t).easing(E[n]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(r).yoyo(c);
+    return s && l.start(), d && l.onComplete(d), this.tweens.push(l), this.group.add(l), l;
   }
   remove(e) {
     this.group.remove(e), this.tweens.splice(this.tweens.indexOf(e), 1);
@@ -194,7 +190,7 @@ class L {
     return this.add(e.scale, t, {
       ...n,
       yoyo: !0,
-      repeat: (n == null ? void 0 : n.repeat) ?? 1,
+      repeat: n?.repeat ?? 1,
       to: { x: i.x * s, y: i.y * s }
     });
   }
@@ -228,8 +224,8 @@ class L {
     });
   }
   zoomIn3(e, t, n = { scaleFrom: 0.9 }) {
-    const { x: s, y: i, z: o } = e.scale, { scaleFrom: u } = n;
-    return e.scale.multiplyScalar(u), this.add(e.scale, t, {
+    const { x: s, y: i, z: o } = e.scale, { scaleFrom: r } = n;
+    return e.scale.multiplyScalar(r), this.add(e.scale, t, {
       ...n,
       to: { x: s, y: i, z: o }
     });
@@ -244,15 +240,15 @@ class L {
     });
   }
   switchColor3(e, t, n, s) {
-    const i = new f(e.material.color), o = new f(t), u = new f(), l = this.dummy(n, { ...s, easing: "sineIn" });
-    return l.onUpdate((d) => {
-      u.copy(i), u.lerp(o, d.value), e.material.color.setHex(u.getHex());
-    }), l;
+    const i = new m(e.material.color), o = new m(t), r = new m(), c = this.dummy(n, { ...s, easing: "sineIn" });
+    return c.onUpdate((u) => {
+      r.copy(i), r.lerp(o, u.value), e.material.color.setHex(r.getHex());
+    }), c;
   }
 }
-const H = new L();
+const M = new k();
 export {
-  P as Physics,
-  A as animations,
-  H as tweens
+  B as animations,
+  F as physics,
+  M as tweens
 };
