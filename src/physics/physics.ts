@@ -1,5 +1,5 @@
-import { NaiveBroadphase, World } from 'cannon-es';
 import type { Vector3Like } from 'three';
+import { NaiveBroadphase, World } from 'cannon-es';
 
 export type PhysicsProps = {
     gravity?: Vector3Like;
@@ -11,11 +11,13 @@ export class Physics {
     maxSubSteps = 3;
     world: World;
 
-    constructor(config: PhysicsProps) {
-        const { gravity = { x: 0, y: -10, z: 0 } } = config;
-
+    constructor() {
         this.world = new World();
         this.world.broadphase = new NaiveBroadphase();
+    }
+
+    init(config: PhysicsProps) {
+        const { gravity = { x: 0, y: -10, z: 0 } } = config;
         this.world.gravity.set(gravity.x, gravity.y, gravity.z);
     }
 
