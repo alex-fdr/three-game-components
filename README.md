@@ -1,5 +1,7 @@
 This package contains a bunch of components to help with the development of three.js based projects
 
+[![npm version](https://img.shields.io/npm/v/@alexfdr/three-game-components)](https://www.npmjs.com/package/@alexfdr/three-game-components)
+
 # List of components 
 
 - animations
@@ -7,7 +9,7 @@ This package contains a bunch of components to help with the development of thre
 - physics
 
 ## Animations Component
-A wrapper around three.js animation's system. Animations can be created manually by calling `add` method or by providing a config to the `parse` method.
+This is a wrapper around three.js animation system. Animations can be created manually by calling `add` method or by providing a config to the `parse` method.
 
 ```javascript
 import { animations } from '@alexfdr/three-game-components/animations';
@@ -29,7 +31,7 @@ animations.parse([
 ```
 
 ## Tweens Component
-A component is based on tween.js library, makes tween's creation, deletion and update simple and unified.
+This component is based on tween.js library, makes tween's creation, deletion and update simple and unified.
 
 ```javascript
 import { tweens } from '@alexfdr/three-game-components/tweens';
@@ -45,7 +47,7 @@ tweens.add(tweenedObject, timeMs, {
 ```
 
 ## Physics Component
-A slim wrapper around cannon-es lib, it just sets up the physics world and provides an update method that should be called inside user defined game loop.
+This is a slim wrapper around cannon-es lib, it just sets up the physics world and provides an update method that should be called inside user defined game loop.
 
 ```javascript
 import { Body, Box, Vec3 } from 'cannon-es';
