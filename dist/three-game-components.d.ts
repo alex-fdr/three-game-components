@@ -42,6 +42,16 @@ declare class AnimationSystem {
 
 declare type CustomTween = Tween<any>;
 
+declare class HtmlScreens {
+    domElements: Record<string, HTMLElement>;
+    add(name: string): void;
+    show(name: string): void;
+    hide(name: string): void;
+    getScreen(name: string): HTMLElement;
+}
+
+export declare const htmlScreens: HtmlScreens;
+
 declare const mapping: {
     linear: (amount: number) => number;
     quad: (amount: number) => number;

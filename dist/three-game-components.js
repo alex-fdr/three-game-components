@@ -1,9 +1,9 @@
-import { LoopRepeat as w, LoopOnce as y, AnimationMixer as x, Mesh as p, Color as m } from "three";
-import { assets as f } from "@alexfdr/three-game-core";
+import { LoopRepeat as w, LoopOnce as y, AnimationMixer as x, Mesh as f, Color as h } from "three";
+import { assets as p } from "@alexfdr/three-game-core";
 import * as I from "three/addons/utils/SkeletonUtils";
-import { World as O, NaiveBroadphase as b } from "cannon-es";
-import { Easing as a, Group as C, Tween as S } from "@tweenjs/tween.js";
-class T {
+import { World as O, NaiveBroadphase as S } from "cannon-es";
+import { Easing as a, Group as E, Tween as b } from "@tweenjs/tween.js";
+class C {
   mixers = /* @__PURE__ */ new Map();
   animationsList = [];
   enabled = !0;
@@ -37,29 +37,53 @@ class T {
       keys: []
     };
     for (const { key: n } of e) {
-      const s = f.models.get(n);
+      const s = p.models.get(n);
       s.getObjectByProperty("type", "SkinnedMesh") && (t.mesh = I.clone(s));
     }
     if (!t.mesh)
       throw new Error("could not parse animations data, no base mesh found");
     for (const n of e) {
-      const { key: s } = n, i = f.models.getAnimations(s);
+      const { key: s } = n, i = p.models.getAnimations(s);
       if (i.length) {
-        const { name: o = s, loop: r = !1, timeScale: c = 1, clipId: u = 0 } = n, d = this.add(t.mesh, i[u], r, c);
+        const { name: o = s, loop: r = !1, timeScale: c = 1, clipId: l = 0 } = n, d = this.add(t.mesh, i[l], r, c);
         t.anims[o] = d, t.keys.push(o);
       }
     }
     return t;
   }
 }
-const B = new T();
+const g = new C();
 class v {
+  domElements = {};
+  add(e) {
+    const t = document.getElementById(e);
+    if (!t)
+      throw new Error(`no element with id=${e} found`);
+    this.domElements[e] = t, t.addEventListener("animationend", () => {
+      t.classList.contains("hiding") && t.classList.replace("hiding", "hidden");
+    });
+  }
+  show(e) {
+    this.getScreen(e).classList.replace("hidden", "shown");
+  }
+  hide(e) {
+    this.getScreen(e).classList.replace("shown", "hiding");
+  }
+  getScreen(e) {
+    const t = this.domElements[e];
+    if (!t)
+      throw new Error(`no screen with id=${e} found`);
+    return t;
+  }
+}
+const F = new v();
+class T {
   timeStep = 1 / 60;
   lastCallTime = 0;
   maxSubSteps = 3;
   world;
   constructor() {
-    this.world = new O(), this.world.broadphase = new b();
+    this.world = new O(), this.world.broadphase = new S();
   }
   init(e) {
     const { gravity: t = { x: 0, y: -10, z: 0 } } = e;
@@ -74,7 +98,7 @@ class v {
     this.world.step(this.timeStep, t, this.maxSubSteps), this.lastCallTime = e;
   }
 }
-const F = new v(), E = {
+const M = new T(), L = {
   linear: a.Linear.None,
   quad: a.Quadratic.InOut,
   quadIn: a.Quadratic.In,
@@ -109,7 +133,7 @@ const F = new v(), E = {
 };
 class k {
   tweens = [];
-  group = new C();
+  group = new E();
   add(e, t = 300, {
     easing: n = "sine",
     autostart: s = !0,
@@ -117,13 +141,13 @@ class k {
     repeat: o = 0,
     repeatDelay: r = 0,
     yoyo: c = !1,
-    to: u,
+    to: l,
     onComplete: d
   } = {}) {
-    if (!u)
+    if (!l)
       throw new Error("no destination provided");
-    const l = new S(e).to(u, t).easing(E[n]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(r).yoyo(c);
-    return s && l.start(), d && l.onComplete(d), this.tweens.push(l), this.group.add(l), l;
+    const u = new b(e).to(l, t).easing(L[n]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(r).yoyo(c);
+    return s && u.start(), d && u.onComplete(d), this.tweens.push(u), this.group.add(u), u;
   }
   remove(e) {
     this.group.remove(e), this.tweens.splice(this.tweens.indexOf(e), 1);
@@ -198,7 +222,7 @@ class k {
     if (!e.material) {
       let i;
       if (e.traverse((o) => {
-        o instanceof p && (i = this.fadeIn3(o, t, n));
+        o instanceof f && (i = this.fadeIn3(o, t, n));
       }), !i)
         throw new Error("cannot create a tween, no nested mesh found");
       return i;
@@ -213,7 +237,7 @@ class k {
     if (!e.material) {
       let s;
       if (e.traverse((i) => {
-        i instanceof p && (s = this.fadeOut3(i, t, n));
+        i instanceof f && (s = this.fadeOut3(i, t, n));
       }), !s)
         throw new Error("cannot create a tween, no nested mesh found");
       return s;
@@ -240,15 +264,16 @@ class k {
     });
   }
   switchColor3(e, t, n, s) {
-    const i = new m(e.material.color), o = new m(t), r = new m(), c = this.dummy(n, { ...s, easing: "sineIn" });
-    return c.onUpdate((u) => {
-      r.copy(i), r.lerp(o, u.value), e.material.color.setHex(r.getHex());
+    const i = new h(e.material.color), o = new h(t), r = new h(), c = this.dummy(n, { ...s, easing: "sineIn" });
+    return c.onUpdate((l) => {
+      r.copy(i), r.lerp(o, l.value), e.material.color.setHex(r.getHex());
     }), c;
   }
 }
-const M = new k();
+const A = new k();
 export {
-  B as animations,
-  F as physics,
-  M as tweens
+  g as animations,
+  F as htmlScreens,
+  M as physics,
+  A as tweens
 };
