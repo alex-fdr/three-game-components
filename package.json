@@ -11,7 +11,8 @@
     "keywords": [
         "three",
         "cannon-es",
-        "tween.js"
+        "tween.js",
+        "pixi.js"
     ],
     "main": "./dist/three-game-components.js",
     "types": "./dist/three-game-components.d.ts",
