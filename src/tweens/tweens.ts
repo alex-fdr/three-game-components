@@ -1,7 +1,7 @@
 import type { ColorRepresentation, Material, Object3D, Vector3 } from 'three';
 import { Color, Mesh } from 'three';
 import { Group, Tween } from '@tweenjs/tween.js';
-import { mapping } from './mapping';
+import { mapping } from './easing-mapping';
 
 export type TweenProps = {
     easing: keyof typeof mapping;
