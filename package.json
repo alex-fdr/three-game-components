@@ -24,6 +24,7 @@
         "@biomejs/biome": "^2.3.8",
         "@tweenjs/tween.js": "^22.0.0",
         "@types/three": "^0.181.0",
+        "pixi.js": "^8.14.3",
         "three": "^0.181.2",
         "vite": "^7.2.2",
         "vite-plugin-dts": "^4.5.4"
@@ -32,6 +33,7 @@
         "@alexfdr/three-game-core": "^1.0.21",
         "@tweenjs/tween.js": "^22.0.0",
         "cannon-es": "^0.20.0",
-        "three": "^0.181.2"
+        "three": "^0.181.2",
+        "pixi.js": "^8.14.3"
     }
 }

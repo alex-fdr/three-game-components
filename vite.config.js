@@ -16,7 +16,8 @@ export default defineConfig({
                 'cannon-es',
                 'three/addons/utils/SkeletonUtils',
                 '@alexfdr/three-game-core',
-                '@tweenjs/tween.js'
+                '@tweenjs/tween.js',
+                'pixi.js',
             ]
         },
         reportCompressedSize: false,
