@@ -2,8 +2,9 @@ import { LoopRepeat as w, LoopOnce as y, AnimationMixer as x, Mesh as f, Color a
 import { assets as p } from "@alexfdr/three-game-core";
 import * as I from "three/addons/utils/SkeletonUtils";
 import { World as O, NaiveBroadphase as S } from "cannon-es";
-import { Easing as a, Group as E, Tween as b } from "@tweenjs/tween.js";
-class C {
+import { WebGLRenderer as b, Container as C } from "pixi.js";
+import { Easing as a, Group as E, Tween as v } from "@tweenjs/tween.js";
+class L {
   mixers = /* @__PURE__ */ new Map();
   animationsList = [];
   enabled = !0;
@@ -45,15 +46,15 @@ class C {
     for (const n of e) {
       const { key: s } = n, i = p.models.getAnimations(s);
       if (i.length) {
-        const { name: o = s, loop: r = !1, timeScale: c = 1, clipId: l = 0 } = n, d = this.add(t.mesh, i[l], r, c);
-        t.anims[o] = d, t.keys.push(o);
+        const { name: o = s, loop: r = !1, timeScale: c = 1, clipId: l = 0 } = n, m = this.add(t.mesh, i[l], r, c);
+        t.anims[o] = m, t.keys.push(o);
       }
     }
     return t;
   }
 }
-const g = new C();
-class v {
+const A = new L();
+class T {
   domElements = {};
   add(e) {
     const t = document.getElementById(e);
@@ -76,8 +77,8 @@ class v {
     return t;
   }
 }
-const F = new v();
-class T {
+const P = new T();
+class k {
   timeStep = 1 / 60;
   lastCallTime = 0;
   maxSubSteps = 3;
@@ -98,7 +99,32 @@ class T {
     this.world.step(this.timeStep, t, this.maxSubSteps), this.lastCallTime = e;
   }
 }
-const M = new T(), L = {
+const U = new k();
+class z {
+  renderer = new b();
+  stage = new C();
+  screens = /* @__PURE__ */ new Map();
+  async init(e, t, n) {
+    const s = e.getContext();
+    s && s instanceof WebGL2RenderingContext && await this.renderer.init({
+      context: s,
+      width: t,
+      height: n,
+      clearBeforeRender: !1
+    });
+  }
+  resize(e, t) {
+    const s = 1 / (e / t), i = e > t ? "handleLandscape" : "handlePortrait";
+    this.stage.position.set(e * 0.5, t * 0.5);
+    for (const [, o] of this.screens)
+      o[i](s);
+    this.renderer.resize(e, t);
+  }
+  render() {
+    this.renderer.resetState(), this.renderer.render(this.stage);
+  }
+}
+const W = new z(), B = {
   linear: a.Linear.None,
   quad: a.Quadratic.InOut,
   quadIn: a.Quadratic.In,
@@ -131,7 +157,7 @@ const M = new T(), L = {
   bounceIn: a.Bounce.In,
   bounceOut: a.Bounce.Out
 };
-class k {
+class q {
   tweens = [];
   group = new E();
   add(e, t = 300, {
@@ -142,12 +168,12 @@ class k {
     repeatDelay: r = 0,
     yoyo: c = !1,
     to: l,
-    onComplete: d
+    onComplete: m
   } = {}) {
     if (!l)
       throw new Error("no destination provided");
-    const u = new b(e).to(l, t).easing(L[n]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(r).yoyo(c);
-    return s && u.start(), d && u.onComplete(d), this.tweens.push(u), this.group.add(u), u;
+    const u = new v(e).to(l, t).easing(B[n]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(r).yoyo(c);
+    return s && u.start(), m && u.onComplete(m), this.tweens.push(u), this.group.add(u), u;
   }
   remove(e) {
     this.group.remove(e), this.tweens.splice(this.tweens.indexOf(e), 1);
@@ -270,10 +296,11 @@ class k {
     }), c;
   }
 }
-const A = new k();
+const G = new q();
 export {
-  g as animations,
-  F as htmlScreens,
-  M as physics,
-  A as tweens
+  A as animations,
+  P as htmlScreens,
+  U as physics,
+  W as pixiUI,
+  G as tweens
 };

@@ -1,14 +1,18 @@
 import { AnimationAction } from 'three';
 import { AnimationClip } from 'three';
 import { AnimationMixer } from 'three';
+import { BaseScreen } from './screen';
 import { Color } from 'three';
 import { ColorRepresentation } from 'three';
+import { Container } from 'pixi.js';
 import { Group } from '@tweenjs/tween.js';
 import { Material } from 'three';
 import { Object3D } from 'three';
 import { Tween } from '@tweenjs/tween.js';
 import { Vector3 } from 'three';
 import { Vector3Like } from 'three';
+import { WebGLRenderer } from 'pixi.js';
+import { WebGLRenderer as WebGLRenderer_2 } from 'three';
 import { World } from 'cannon-es';
 
 declare type AddProps<T> = Partial<TweenProps & {
@@ -39,6 +43,8 @@ declare class AnimationSystem {
     update(dt: number): void;
     parse(animationsMap: AnimationData[]): ParsedAnimationData<AnimationData> | never;
 }
+
+export { BaseScreen }
 
 declare type CustomTween = Tween<any>;
 
@@ -119,6 +125,17 @@ export declare const physics: Physics;
 export declare type PhysicsProps = {
     gravity?: Vector3Like;
 };
+
+declare class PixiUI {
+    renderer: WebGLRenderer<HTMLCanvasElement>;
+    stage: Container;
+    screens: Map<string, BaseScreen>;
+    init(threeRenderer: WebGLRenderer_2, width: number, height: number): Promise<void>;
+    resize(width: number, height: number): void;
+    render(): void;
+}
+
+export declare const pixiUI: PixiUI;
 
 declare type ScaleProperty = {
     scale: {
