@@ -3,14 +3,14 @@ import { assets as p } from "@alexfdr/three-game-core";
 import * as I from "three/addons/utils/SkeletonUtils";
 import { World as O, NaiveBroadphase as S } from "cannon-es";
 import { WebGLRenderer as b, Container as C } from "pixi.js";
-import { Easing as a, Group as E, Tween as v } from "@tweenjs/tween.js";
-class L {
+import { Easing as i, Group as E, Tween as T } from "@tweenjs/tween.js";
+class v {
   mixers = /* @__PURE__ */ new Map();
   animationsList = [];
   enabled = !0;
-  add(e, t, n = !1, s = 1) {
+  add(e, t, s = !1, n = 1) {
     const o = this.addMixer(e).clipAction(t);
-    return o.timeScale = s, o.clampWhenFinished = !0, o.setLoop(n ? w : y, 1 / 0), this.animationsList.push(o), o;
+    return o.timeScale = n, o.clampWhenFinished = !0, o.setLoop(s ? w : y, 1 / 0), this.animationsList.push(o), o;
   }
   addMixer(e) {
     this.mixers.has(e.uuid) || this.mixers.set(e.uuid, new x(e));
@@ -19,11 +19,11 @@ class L {
       throw new Error("no animation mixer found");
     return t;
   }
-  onAnimationComplete(e, t, n = !0) {
-    const s = e.getMixer(), i = () => {
-      n && s.removeEventListener("finished", i), t?.();
+  onAnimationComplete(e, t, s = !0) {
+    const n = e.getMixer(), a = () => {
+      s && n.removeEventListener("finished", a), t?.();
     };
-    s.addEventListener("finished", i);
+    n.addEventListener("finished", a);
   }
   update(e) {
     if (this.enabled)
@@ -37,24 +37,24 @@ class L {
       // animationsList: [],
       keys: []
     };
-    for (const { key: n } of e) {
-      const s = p.models.get(n);
-      s.getObjectByProperty("type", "SkinnedMesh") && (t.mesh = I.clone(s));
+    for (const { key: s } of e) {
+      const n = p.models.get(s);
+      n.getObjectByProperty("type", "SkinnedMesh") && (t.mesh = I.clone(n));
     }
     if (!t.mesh)
       throw new Error("could not parse animations data, no base mesh found");
-    for (const n of e) {
-      const { key: s } = n, i = p.models.getAnimations(s);
-      if (i.length) {
-        const { name: o = s, loop: r = !1, timeScale: c = 1, clipId: l = 0 } = n, m = this.add(t.mesh, i[l], r, c);
+    for (const s of e) {
+      const { key: n } = s, a = p.models.getAnimations(n);
+      if (a.length) {
+        const { name: o = n, loop: r = !1, timeScale: c = 1, clipId: d = 0 } = s, m = this.add(t.mesh, a[d], r, c);
         t.anims[o] = m, t.keys.push(o);
       }
     }
     return t;
   }
 }
-const A = new L();
-class T {
+const A = new v();
+class L {
   domElements = {};
   add(e) {
     const t = document.getElementById(e);
@@ -77,8 +77,8 @@ class T {
     return t;
   }
 }
-const P = new T();
-class k {
+const P = new L();
+class z {
   timeStep = 1 / 60;
   lastCallTime = 0;
   maxSubSteps = 3;
@@ -99,81 +99,82 @@ class k {
     this.world.step(this.timeStep, t, this.maxSubSteps), this.lastCallTime = e;
   }
 }
-const U = new k();
-class z {
+const U = new z();
+class k {
   renderer = new b();
   stage = new C();
   screens = /* @__PURE__ */ new Map();
-  async init(e, t, n) {
-    const s = e.getContext();
-    s && s instanceof WebGL2RenderingContext && await this.renderer.init({
-      context: s,
+  async init(e, t, s) {
+    const n = e.getContext();
+    n && n instanceof WebGL2RenderingContext && await this.renderer.init({
+      context: n,
       width: t,
-      height: n,
+      height: s,
       clearBeforeRender: !1
     });
   }
   resize(e, t) {
-    const s = 1 / (e / t), i = e > t ? "handleLandscape" : "handlePortrait";
+    const n = 1 / (e / t), a = e > t ? "handleLandscape" : "handlePortrait";
     this.stage.position.set(e * 0.5, t * 0.5);
     for (const [, o] of this.screens)
-      o[i](s);
+      o[a](n);
     this.renderer.resize(e, t);
   }
   render() {
     this.renderer.resetState(), this.renderer.render(this.stage);
   }
 }
-const W = new z(), B = {
-  linear: a.Linear.None,
-  quad: a.Quadratic.InOut,
-  quadIn: a.Quadratic.In,
-  quadOut: a.Quadratic.Out,
-  cubic: a.Cubic.InOut,
-  cubicIn: a.Cubic.In,
-  cubicOut: a.Cubic.Out,
-  quar: a.Quartic.InOut,
-  quarIn: a.Quartic.In,
-  quarOut: a.Quartic.Out,
-  quint: a.Quintic.InOut,
-  quintIn: a.Quintic.In,
-  quintOut: a.Quintic.Out,
-  sine: a.Sinusoidal.InOut,
-  sineIn: a.Sinusoidal.In,
-  sineOut: a.Sinusoidal.Out,
-  exp: a.Exponential.InOut,
-  expIn: a.Exponential.In,
-  expOut: a.Exponential.Out,
-  circ: a.Circular.InOut,
-  circIn: a.Circular.In,
-  circOut: a.Circular.Out,
-  elastic: a.Elastic.InOut,
-  elasticIn: a.Elastic.In,
-  elasticOut: a.Elastic.Out,
-  back: a.Back.InOut,
-  backIn: a.Back.In,
-  backOut: a.Back.Out,
-  bounce: a.Bounce.InOut,
-  bounceIn: a.Bounce.In,
-  bounceOut: a.Bounce.Out
+const W = new k(), B = {
+  linear: i.Linear.None,
+  quad: i.Quadratic.InOut,
+  quadIn: i.Quadratic.In,
+  quadOut: i.Quadratic.Out,
+  cubic: i.Cubic.InOut,
+  cubicIn: i.Cubic.In,
+  cubicOut: i.Cubic.Out,
+  quar: i.Quartic.InOut,
+  quarIn: i.Quartic.In,
+  quarOut: i.Quartic.Out,
+  quint: i.Quintic.InOut,
+  quintIn: i.Quintic.In,
+  quintOut: i.Quintic.Out,
+  sine: i.Sinusoidal.InOut,
+  sineIn: i.Sinusoidal.In,
+  sineOut: i.Sinusoidal.Out,
+  exp: i.Exponential.InOut,
+  expIn: i.Exponential.In,
+  expOut: i.Exponential.Out,
+  circ: i.Circular.InOut,
+  circIn: i.Circular.In,
+  circOut: i.Circular.Out,
+  elastic: i.Elastic.InOut,
+  elasticIn: i.Elastic.In,
+  elasticOut: i.Elastic.Out,
+  back: i.Back.InOut,
+  backIn: i.Back.In,
+  backOut: i.Back.Out,
+  bounce: i.Bounce.InOut,
+  bounceIn: i.Bounce.In,
+  bounceOut: i.Bounce.Out
 };
-class q {
+class g {
   tweens = [];
   group = new E();
-  add(e, t = 300, {
-    easing: n = "sine",
-    autostart: s = !0,
-    delay: i = 0,
+  add(e, {
+    time: t = 300,
+    easing: s = "sine",
+    autostart: n = !0,
+    delay: a = 0,
     repeat: o = 0,
     repeatDelay: r = 0,
     yoyo: c = !1,
-    to: l,
+    to: d,
     onComplete: m
   } = {}) {
-    if (!l)
+    if (!d)
       throw new Error("no destination provided");
-    const u = new v(e).to(l, t).easing(B[n]).delay(i).repeat(o === -1 ? 1 / 0 : o).repeatDelay(r).yoyo(c);
-    return s && u.start(), m && u.onComplete(m), this.tweens.push(u), this.group.add(u), u;
+    const l = new T(e).to(d, t).easing(B[s]).delay(a).repeat(o === -1 ? 1 / 0 : o).repeatDelay(r).yoyo(c);
+    return n && l.start(), m && l.onComplete(m), this.tweens.push(l), this.group.add(l), l;
   }
   remove(e) {
     this.group.remove(e), this.tweens.splice(this.tweens.indexOf(e), 1);
@@ -190,113 +191,122 @@ class q {
     this.group.update(e);
   }
   wait(e) {
-    const t = { value: 0 }, n = { value: 1 }, s = this.add(t, e, {
+    const t = { value: 0 }, s = { value: 1 }, n = this.add(t, {
+      time: e,
       easing: "linear",
       autostart: !0,
-      to: n
+      to: s
     });
-    return new Promise((i) => {
-      s.onComplete(() => i());
+    return new Promise((a) => {
+      n.onComplete(() => a());
     });
   }
-  dummy(e, t) {
-    return this.add({ value: 0 }, e, {
-      ...t,
+  dummy(e) {
+    const t = { value: 0 };
+    return this.add(t, {
+      ...e,
       easing: "linear",
       to: { value: 1 }
     });
   }
-  fadeIn(e, t = 300, n = {}) {
+  fadeIn(e, t = {}) {
     e.alpha = 0;
-    const { autostart: s, delay: i } = n, o = this.add(e, t, {
-      ...n,
+    const { autostart: s, delay: n } = t, a = this.add(e, {
+      ...t,
       to: { alpha: 1 }
     });
-    return (s === !1 || i) && o.onStart(() => {
+    return (s === !1 || n) && a.onStart(() => {
       e.alpha = 0;
-    }), o;
+    }), a;
   }
-  fadeOut(e, t = 200, n) {
-    return this.add(e, t, {
-      ...n,
+  fadeOut(e, t) {
+    return this.add(e, {
+      ...t,
       to: { alpha: 0 }
     });
   }
-  zoomIn(e, t = 300, n = { scaleFrom: 0.9 }) {
-    const { scaleFrom: s } = n, i = e.scale.x || 1;
-    return e.scale.x = s, e.scale.y = s, this.add(e.scale, t, {
-      ...n,
-      to: { x: i, y: i }
+  zoomIn(e, t = { scaleFrom: 0.9 }) {
+    const { scaleFrom: s } = t, n = e.scale.x || 1;
+    return e.scale.x = s, e.scale.y = s, this.add(e.scale, {
+      ...t,
+      to: { x: n, y: n }
     });
   }
-  zoomOut(e, t = 300, n = { scaleTo: 1.1 }) {
-    return this.add(e.scale, t, {
-      ...n,
-      to: { x: n.scaleTo, y: n.scaleTo }
+  zoomOut(e, t = { scaleTo: 1.1 }) {
+    return this.add(e.scale, {
+      ...t,
+      to: { x: t.scaleTo, y: t.scaleTo }
     });
   }
-  pulse(e, t = 300, n = { scaleTo: 1.1 }) {
-    const s = n.scaleTo, i = e.scale;
-    return this.add(e.scale, t, {
-      ...n,
+  pulse(e, t = { scaleTo: 1.1 }) {
+    const s = t.scaleTo, n = e.scale;
+    return this.add(e.scale, {
+      ...t,
       yoyo: !0,
-      repeat: n?.repeat ?? 1,
-      to: { x: i.x * s, y: i.y * s }
+      repeat: t?.repeat ?? 1,
+      to: { x: n.x * s, y: n.y * s }
     });
   }
-  fadeIn3(e, t, n) {
+  fadeIn3(e, t) {
     if (!e.material) {
-      let i;
-      if (e.traverse((o) => {
-        o instanceof f && (i = this.fadeIn3(o, t, n));
-      }), !i)
+      let n;
+      if (e.traverse((a) => {
+        a instanceof f && (n = this.fadeIn3(a, t));
+      }), !n)
         throw new Error("cannot create a tween, no nested mesh found");
-      return i;
+      return n;
     }
     const s = e.material.opacity || 1;
-    return e.material.transparent = !0, e.material.opacity = 0, this.add(e.material, t, {
-      ...n,
+    return e.material.transparent = !0, e.material.opacity = 0, this.add(e.material, {
+      ...t,
       to: { opacity: s }
     });
   }
-  fadeOut3(e, t, n) {
+  fadeOut3(e, t) {
     if (!e.material) {
       let s;
-      if (e.traverse((i) => {
-        i instanceof f && (s = this.fadeOut3(i, t, n));
+      if (e.traverse((n) => {
+        n instanceof f && (s = this.fadeOut3(n, t));
       }), !s)
         throw new Error("cannot create a tween, no nested mesh found");
       return s;
     }
-    return e.material.transparent = !0, this.add(e.material, t, {
-      ...n,
+    return e.material.transparent = !0, this.add(e.material, {
+      ...t,
       to: { opacity: 0 }
     });
   }
-  zoomIn3(e, t, n = { scaleFrom: 0.9 }) {
-    const { x: s, y: i, z: o } = e.scale, { scaleFrom: r } = n;
-    return e.scale.multiplyScalar(r), this.add(e.scale, t, {
-      ...n,
-      to: { x: s, y: i, z: o }
+  zoomIn3(e, t = { scaleFrom: 0.9 }) {
+    const { x: s, y: n, z: a } = e.scale, { scaleFrom: o } = t;
+    return e.scale.multiplyScalar(o), this.add(e.scale, {
+      ...t,
+      to: { x: s, y: n, z: a }
     });
   }
-  pulse3(e, t = 300, n = { scaleTo: 1.1 }) {
-    const { scaleTo: s } = n, i = e.scale;
-    return this.add(e.scale, t, {
-      ...n,
+  zoomOut3(e, t = { scaleTo: 1.1 }) {
+    const { scaleTo: s } = t;
+    return this.add(e.scale, {
+      ...t,
+      to: { x: s, z: s, y: s }
+    });
+  }
+  pulse3(e, t = { scaleTo: 1.1 }) {
+    const { scaleTo: s } = t, n = e.scale;
+    return this.add(e.scale, {
+      ...t,
       easing: "cubic",
       yoyo: !0,
-      to: { x: i.x * s, y: i.y * s, z: i.z * s }
+      to: { x: n.x * s, y: n.y * s, z: n.z * s }
     });
   }
-  switchColor3(e, t, n, s) {
-    const i = new h(e.material.color), o = new h(t), r = new h(), c = this.dummy(n, { ...s, easing: "sineIn" });
-    return c.onUpdate((l) => {
-      r.copy(i), r.lerp(o, l.value), e.material.color.setHex(r.getHex());
-    }), c;
+  switchColor3(e, t, s) {
+    const n = new h(e.material.color), a = new h(t), o = new h(), r = this.dummy({ ...s, easing: "sineIn" });
+    return r.onUpdate((c) => {
+      o.copy(n), o.lerp(a, c.value), e.material.color.setHex(o.getHex());
+    }), r;
   }
 }
-const G = new q();
+const G = new g();
 export {
   A as animations,
   P as htmlScreens,

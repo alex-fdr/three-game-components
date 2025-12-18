@@ -148,6 +148,7 @@ declare type ScaleProperty = {
 declare type ToProps<T> = Partial<Record<keyof T, number | string>>;
 
 declare type TweenProps = {
+    time: number;
     easing: keyof typeof mapping;
     autostart: boolean;
     delay: number;
@@ -163,37 +164,42 @@ export declare const tweens: TweensFactory;
 declare class TweensFactory {
     tweens: CustomTween[];
     group: Group;
-    add<T extends Record<string, any>>(target: T, time?: number, { easing, autostart, delay, repeat, repeatDelay, yoyo, to, onComplete, }?: AddProps<T>): CustomTween;
+    add<T extends Record<string, any>>(target: T, { time, easing, autostart, delay, repeat, repeatDelay, yoyo, to, onComplete, }?: AddProps<T>): CustomTween;
     remove(tween: CustomTween): void;
     pause(): void;
     resume(): void;
     update(time: number): void;
     wait(time: number): Promise<void>;
-    dummy(time: number, props: Partial<TweenProps>): CustomTween;
-    fadeIn(target: AlphaProperty, time?: number, props?: Partial<TweenProps>): CustomTween;
-    fadeOut(target: AlphaProperty, time: number | undefined, props: TweenProps): CustomTween;
-    zoomIn(target: ScaleProperty, time?: number, props?: Partial<TweenProps> & {
+    dummy(props: Partial<TweenProps>): CustomTween;
+    fadeIn(target: AlphaProperty, props?: Partial<TweenProps>): CustomTween;
+    fadeOut(target: AlphaProperty, props: TweenProps): CustomTween;
+    zoomIn(target: ScaleProperty, props?: Partial<TweenProps> & {
         scaleFrom: number;
     }): CustomTween;
-    zoomOut(target: ScaleProperty, time?: number, props?: Partial<TweenProps> & {
+    zoomOut(target: ScaleProperty, props?: Partial<TweenProps> & {
         scaleTo: number;
     }): CustomTween;
-    pulse(target: ScaleProperty, time?: number, props?: Partial<TweenProps> & {
+    pulse(target: ScaleProperty, props?: Partial<TweenProps> & {
         scaleTo: number;
     }): CustomTween;
-    fadeIn3(target: MaterialProperty, time: number, props: Partial<TweenProps>): CustomTween | never;
-    fadeOut3(target: MaterialProperty, time: number, props: Partial<TweenProps>): CustomTween | never;
+    fadeIn3(target: MaterialProperty, props: Partial<TweenProps>): CustomTween | never;
+    fadeOut3(target: MaterialProperty, props: Partial<TweenProps>): CustomTween | never;
     zoomIn3(target: {
         scale: Vector3;
-    }, time: number, props?: Partial<TweenProps> & {
+    }, props?: Partial<TweenProps> & {
         scaleFrom: number;
+    }): CustomTween;
+    zoomOut3(target: {
+        scale: Vector3;
+    }, props?: Partial<TweenProps> & {
+        scaleTo: number;
     }): CustomTween;
     pulse3(target: {
         scale: Vector3;
-    }, time?: number, props?: Partial<TweenProps> & {
+    }, props?: Partial<TweenProps> & {
         scaleTo: number;
     }): CustomTween;
-    switchColor3(target: MaterialColorProperty, color: ColorRepresentation, time: number, props: Partial<TweenProps>): CustomTween;
+    switchColor3(target: MaterialColorProperty, color: ColorRepresentation, props: Partial<TweenProps>): CustomTween;
 }
 
 export { }
