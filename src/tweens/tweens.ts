@@ -4,6 +4,7 @@ import { Group, Tween } from '@tweenjs/tween.js';
 import { mapping } from './easing-mapping';
 
 export type TweenProps = {
+    time: number;
     easing: keyof typeof mapping;
     autostart: boolean;
     delay: number;
@@ -35,8 +36,8 @@ export class TweensFactory {
 
     add<T extends Record<string, any>>(
         target: T,
-        time = 300,
         {
+            time = 300,
             easing = 'sine',
             autostart = true,
             delay = 0,
@@ -96,7 +97,8 @@ export class TweensFactory {
     wait(time: number): Promise<void> {
         const from = { value: 0 };
         const to = { value: 1 };
-        const tween = this.add(from, time, {
+        const tween = this.add(from, {
+            time,
             easing: 'linear',
             autostart: true,
             to,
@@ -107,19 +109,20 @@ export class TweensFactory {
         });
     }
 
-    dummy(time: number, props: Partial<TweenProps>): CustomTween {
-        return this.add({ value: 0 }, time, {
+    dummy(props: Partial<TweenProps>): CustomTween {
+        const target = { value: 0 };
+        return this.add(target, {
             ...props,
             easing: 'linear',
             to: { value: 1 },
         });
     }
 
-    fadeIn(target: AlphaProperty, time = 300, props: Partial<TweenProps> = {}): CustomTween {
+    fadeIn(target: AlphaProperty, props: Partial<TweenProps> = {}): CustomTween {
         target.alpha = 0;
 
         const { autostart, delay } = props;
-        const tween = this.add(target, time, {
+        const tween = this.add(target, {
             ...props,
             to: { alpha: 1 },
         });
@@ -133,8 +136,8 @@ export class TweensFactory {
         return tween;
     }
 
-    fadeOut(target: AlphaProperty, time = 200, props: TweenProps): CustomTween {
-        return this.add(target, time, {
+    fadeOut(target: AlphaProperty, props: TweenProps): CustomTween {
+        return this.add(target, {
             ...props,
             to: { alpha: 0 },
         });
@@ -142,14 +145,13 @@ export class TweensFactory {
 
     zoomIn(
         target: ScaleProperty,
-        time = 300,
         props: Partial<TweenProps> & { scaleFrom: number } = { scaleFrom: 0.9 },
     ): CustomTween {
         const { scaleFrom } = props;
         const scaleTo = target.scale.x || 1;
         target.scale.x = scaleFrom;
         target.scale.y = scaleFrom;
-        return this.add(target.scale, time, {
+        return this.add(target.scale, {
             ...props,
             to: { x: scaleTo, y: scaleTo },
         });
@@ -157,10 +159,9 @@ export class TweensFactory {
 
     zoomOut(
         target: ScaleProperty,
-        time = 300,
         props: Partial<TweenProps> & { scaleTo: number } = { scaleTo: 1.1 },
     ): CustomTween {
-        return this.add(target.scale, time, {
+        return this.add(target.scale, {
             ...props,
             to: { x: props.scaleTo, y: props.scaleTo },
         });
@@ -168,12 +169,11 @@ export class TweensFactory {
 
     pulse(
         target: ScaleProperty,
-        time = 300,
         props: Partial<TweenProps> & { scaleTo: number } = { scaleTo: 1.1 },
     ): CustomTween {
         const scaleTo = props.scaleTo;
         const s = target.scale;
-        return this.add(target.scale, time, {
+        return this.add(target.scale, {
             ...props,
             yoyo: true,
             repeat: props?.repeat ?? 1,
@@ -181,17 +181,13 @@ export class TweensFactory {
         });
     }
 
-    fadeIn3(
-        target: MaterialProperty,
-        time: number,
-        props: Partial<TweenProps>,
-    ): CustomTween | never {
+    fadeIn3(target: MaterialProperty, props: Partial<TweenProps>): CustomTween | never {
         if (!target.material) {
             let tween: CustomTween | undefined;
 
             target.traverse((child) => {
                 if (child instanceof Mesh) {
-                    tween = this.fadeIn3(child, time, props);
+                    tween = this.fadeIn3(child, props);
                 }
             });
 
@@ -205,23 +201,19 @@ export class TweensFactory {
         const finalOpacity = target.material.opacity || 1;
         target.material.transparent = true;
         target.material.opacity = 0;
-        return this.add(target.material, time, {
+        return this.add(target.material, {
             ...props,
             to: { opacity: finalOpacity },
         });
     }
 
-    fadeOut3(
-        target: MaterialProperty,
-        time: number,
-        props: Partial<TweenProps>,
-    ): CustomTween | never {
+    fadeOut3(target: MaterialProperty, props: Partial<TweenProps>): CustomTween | never {
         if (!target.material) {
             let tween: CustomTween | undefined;
 
             target.traverse((child) => {
                 if (child instanceof Mesh) {
-                    tween = this.fadeOut3(child, time, props);
+                    tween = this.fadeOut3(child, props);
                 }
             });
 
@@ -233,7 +225,7 @@ export class TweensFactory {
         }
 
         target.material.transparent = true;
-        return this.add(target.material, time, {
+        return this.add(target.material, {
             ...props,
             to: { opacity: 0 },
         });
@@ -241,26 +233,35 @@ export class TweensFactory {
 
     zoomIn3(
         target: { scale: Vector3 },
-        time: number,
         props: Partial<TweenProps> & { scaleFrom: number } = { scaleFrom: 0.9 },
     ): CustomTween {
         const { x: sx, y: sy, z: sz } = target.scale;
         const { scaleFrom } = props;
         target.scale.multiplyScalar(scaleFrom);
-        return this.add(target.scale, time, {
+        return this.add(target.scale, {
             ...props,
             to: { x: sx, y: sy, z: sz },
         });
     }
 
+    zoomOut3(
+        target: { scale: Vector3 },
+        props: Partial<TweenProps> & { scaleTo: number } = { scaleTo: 1.1 },
+    ) {
+        const { scaleTo } = props;
+        return this.add(target.scale, {
+            ...props,
+            to: { x: scaleTo, z: scaleTo, y: scaleTo },
+        });
+    }
+
     pulse3(
         target: { scale: Vector3 },
-        time = 300,
         props: Partial<TweenProps> & { scaleTo: number } = { scaleTo: 1.1 },
     ): CustomTween {
         const { scaleTo } = props;
         const s = target.scale;
-        return this.add(target.scale, time, {
+        return this.add(target.scale, {
             ...props,
             easing: 'cubic',
             yoyo: true,
@@ -271,13 +272,12 @@ export class TweensFactory {
     switchColor3(
         target: MaterialColorProperty,
         color: ColorRepresentation,
-        time: number,
         props: Partial<TweenProps>,
     ): CustomTween {
         const oldColor = new Color(target.material.color);
         const newColor = new Color(color);
         const tempColor = new Color();
-        const dummyTween = this.dummy(time, { ...props, easing: 'sineIn' });
+        const dummyTween = this.dummy({ ...props, easing: 'sineIn' });
 
         dummyTween.onUpdate((t) => {
             tempColor.copy(oldColor);
