@@ -17,6 +17,9 @@ export class PixiUI {
                 height,
                 clearBeforeRender: false,
             });
+
+            // enable pixi events
+            this.renderer.events.setTargetElement(threeRenderer.domElement);
         }
     }
 
@@ -37,6 +40,6 @@ export class PixiUI {
 
     render(): void {
         this.renderer.resetState();
-        this.renderer.render(this.stage);
+        this.renderer.render({ container: this.stage });
     }
 }
