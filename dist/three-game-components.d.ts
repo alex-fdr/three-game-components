@@ -48,6 +48,19 @@ export { BaseScreen }
 
 declare type CustomTween = Tween<any>;
 
+declare class EventEmitter {
+    pool: {
+        [name: string]: Listener[];
+    };
+    on(name: string, listener: Listener): this;
+    once(name: string, listener: Listener): this;
+    off(name: string): this;
+    emit(name: string, ...params: any[]): this;
+    has(name: string): boolean;
+}
+
+export declare const events: EventEmitter;
+
 declare class HtmlScreens {
     domElements: Record<string, HTMLElement>;
     add(name: string): void;
@@ -57,6 +70,9 @@ declare class HtmlScreens {
 }
 
 export declare const htmlScreens: HtmlScreens;
+
+/** biome-ignore-all lint/suspicious/noExplicitAny: We know nothing about argument types of a callback function */
+declare type Listener = (...args: any[]) => void;
 
 declare const mapping: {
     linear: (amount: number) => number;

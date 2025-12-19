@@ -1,16 +1,16 @@
-import { LoopRepeat as w, LoopOnce as y, AnimationMixer as x, Mesh as f, Color as h } from "three";
-import { assets as p } from "@alexfdr/three-game-core";
+import { LoopRepeat as w, LoopOnce as y, AnimationMixer as x, Mesh as p, Color as m } from "three";
+import { assets as f } from "@alexfdr/three-game-core";
 import * as I from "three/addons/utils/SkeletonUtils";
-import { World as O, NaiveBroadphase as S } from "cannon-es";
-import { WebGLRenderer as b, Container as C } from "pixi.js";
-import { Easing as i, Group as E, Tween as T } from "@tweenjs/tween.js";
-class v {
+import { World as O, NaiveBroadphase as E } from "cannon-es";
+import { WebGLRenderer as S, Container as b } from "pixi.js";
+import { Easing as i, Group as C, Tween as v } from "@tweenjs/tween.js";
+class T {
   mixers = /* @__PURE__ */ new Map();
   animationsList = [];
   enabled = !0;
   add(e, t, s = !1, n = 1) {
-    const o = this.addMixer(e).clipAction(t);
-    return o.timeScale = n, o.clampWhenFinished = !0, o.setLoop(s ? w : y, 1 / 0), this.animationsList.push(o), o;
+    const a = this.addMixer(e).clipAction(t);
+    return a.timeScale = n, a.clampWhenFinished = !0, a.setLoop(s ? w : y, 1 / 0), this.animationsList.push(a), a;
   }
   addMixer(e) {
     this.mixers.has(e.uuid) || this.mixers.set(e.uuid, new x(e));
@@ -20,10 +20,10 @@ class v {
     return t;
   }
   onAnimationComplete(e, t, s = !0) {
-    const n = e.getMixer(), a = () => {
-      s && n.removeEventListener("finished", a), t?.();
+    const n = e.getMixer(), o = () => {
+      s && n.removeEventListener("finished", o), t?.();
     };
-    n.addEventListener("finished", a);
+    n.addEventListener("finished", o);
   }
   update(e) {
     if (this.enabled)
@@ -38,23 +38,51 @@ class v {
       keys: []
     };
     for (const { key: s } of e) {
-      const n = p.models.get(s);
+      const n = f.models.get(s);
       n.getObjectByProperty("type", "SkinnedMesh") && (t.mesh = I.clone(n));
     }
     if (!t.mesh)
       throw new Error("could not parse animations data, no base mesh found");
     for (const s of e) {
-      const { key: n } = s, a = p.models.getAnimations(n);
-      if (a.length) {
-        const { name: o = n, loop: r = !1, timeScale: c = 1, clipId: d = 0 } = s, m = this.add(t.mesh, a[d], r, c);
-        t.anims[o] = m, t.keys.push(o);
+      const { key: n } = s, o = f.models.getAnimations(n);
+      if (o.length) {
+        const { name: a = n, loop: r = !1, timeScale: l = 1, clipId: d = 0 } = s, h = this.add(t.mesh, o[d], r, l);
+        t.anims[a] = h, t.keys.push(a);
       }
     }
     return t;
   }
 }
-const A = new v();
+const R = new T();
 class L {
+  pool = {};
+  on(e, t) {
+    return this.has(e) || (this.pool[e] = []), this.pool[e].push(t), this;
+  }
+  once(e, t) {
+    this.has(e) || (this.pool[e] = []);
+    const s = this.pool[e].length;
+    return this.pool[e].push((...n) => {
+      t(...n), this.pool[e].splice(s, 1);
+    }), this;
+  }
+  off(e) {
+    return this.has(e) && delete this.pool[e], this;
+  }
+  emit(e, ...t) {
+    if (this.has(e)) {
+      const s = this.pool[e];
+      for (const n of s)
+        n(...t);
+    }
+    return this;
+  }
+  has(e) {
+    return typeof this.pool[e] < "u";
+  }
+}
+const U = new L();
+class z {
   domElements = {};
   add(e) {
     const t = document.getElementById(e);
@@ -77,14 +105,14 @@ class L {
     return t;
   }
 }
-const P = new L();
-class z {
+const W = new z();
+class k {
   timeStep = 1 / 60;
   lastCallTime = 0;
   maxSubSteps = 3;
   world;
   constructor() {
-    this.world = new O(), this.world.broadphase = new S();
+    this.world = new O(), this.world.broadphase = new E();
   }
   init(e) {
     const { gravity: t = { x: 0, y: -10, z: 0 } } = e;
@@ -99,32 +127,32 @@ class z {
     this.world.step(this.timeStep, t, this.maxSubSteps), this.lastCallTime = e;
   }
 }
-const U = new z();
-class k {
-  renderer = new b();
-  stage = new C();
+const G = new k();
+class g {
+  renderer = new S();
+  stage = new b();
   screens = /* @__PURE__ */ new Map();
   async init(e, t, s) {
     const n = e.getContext();
-    n && n instanceof WebGL2RenderingContext && await this.renderer.init({
+    n && n instanceof WebGL2RenderingContext && (await this.renderer.init({
       context: n,
       width: t,
       height: s,
       clearBeforeRender: !1
-    });
+    }), this.renderer.events.setTargetElement(e.domElement));
   }
   resize(e, t) {
-    const n = 1 / (e / t), a = e > t ? "handleLandscape" : "handlePortrait";
+    const n = 1 / (e / t), o = e > t ? "handleLandscape" : "handlePortrait";
     this.stage.position.set(e * 0.5, t * 0.5);
-    for (const [, o] of this.screens)
-      o[a](n);
+    for (const [, a] of this.screens)
+      a[o](n);
     this.renderer.resize(e, t);
   }
   render() {
-    this.renderer.resetState(), this.renderer.render(this.stage);
+    this.renderer.resetState(), this.renderer.render({ container: this.stage });
   }
 }
-const W = new k(), B = {
+const H = new g(), B = {
   linear: i.Linear.None,
   quad: i.Quadratic.InOut,
   quadIn: i.Quadratic.In,
@@ -157,24 +185,24 @@ const W = new k(), B = {
   bounceIn: i.Bounce.In,
   bounceOut: i.Bounce.Out
 };
-class g {
+class q {
   tweens = [];
-  group = new E();
+  group = new C();
   add(e, {
     time: t = 300,
     easing: s = "sine",
     autostart: n = !0,
-    delay: a = 0,
-    repeat: o = 0,
+    delay: o = 0,
+    repeat: a = 0,
     repeatDelay: r = 0,
-    yoyo: c = !1,
+    yoyo: l = !1,
     to: d,
-    onComplete: m
+    onComplete: h
   } = {}) {
     if (!d)
       throw new Error("no destination provided");
-    const l = new T(e).to(d, t).easing(B[s]).delay(a).repeat(o === -1 ? 1 / 0 : o).repeatDelay(r).yoyo(c);
-    return n && l.start(), m && l.onComplete(m), this.tweens.push(l), this.group.add(l), l;
+    const u = new v(e).to(d, t).easing(B[s]).delay(o).repeat(a === -1 ? 1 / 0 : a).repeatDelay(r).yoyo(l);
+    return n && u.start(), h && u.onComplete(h), this.tweens.push(u), this.group.add(u), u;
   }
   remove(e) {
     this.group.remove(e), this.tweens.splice(this.tweens.indexOf(e), 1);
@@ -197,8 +225,8 @@ class g {
       autostart: !0,
       to: s
     });
-    return new Promise((a) => {
-      n.onComplete(() => a());
+    return new Promise((o) => {
+      n.onComplete(() => o());
     });
   }
   dummy(e) {
@@ -211,13 +239,13 @@ class g {
   }
   fadeIn(e, t = {}) {
     e.alpha = 0;
-    const { autostart: s, delay: n } = t, a = this.add(e, {
+    const { autostart: s, delay: n } = t, o = this.add(e, {
       ...t,
       to: { alpha: 1 }
     });
-    return (s === !1 || n) && a.onStart(() => {
+    return (s === !1 || n) && o.onStart(() => {
       e.alpha = 0;
-    }), a;
+    }), o;
   }
   fadeOut(e, t) {
     return this.add(e, {
@@ -250,8 +278,8 @@ class g {
   fadeIn3(e, t) {
     if (!e.material) {
       let n;
-      if (e.traverse((a) => {
-        a instanceof f && (n = this.fadeIn3(a, t));
+      if (e.traverse((o) => {
+        o instanceof p && (n = this.fadeIn3(o, t));
       }), !n)
         throw new Error("cannot create a tween, no nested mesh found");
       return n;
@@ -266,7 +294,7 @@ class g {
     if (!e.material) {
       let s;
       if (e.traverse((n) => {
-        n instanceof f && (s = this.fadeOut3(n, t));
+        n instanceof p && (s = this.fadeOut3(n, t));
       }), !s)
         throw new Error("cannot create a tween, no nested mesh found");
       return s;
@@ -277,10 +305,10 @@ class g {
     });
   }
   zoomIn3(e, t = { scaleFrom: 0.9 }) {
-    const { x: s, y: n, z: a } = e.scale, { scaleFrom: o } = t;
-    return e.scale.multiplyScalar(o), this.add(e.scale, {
+    const { x: s, y: n, z: o } = e.scale, { scaleFrom: a } = t;
+    return e.scale.multiplyScalar(a), this.add(e.scale, {
       ...t,
-      to: { x: s, y: n, z: a }
+      to: { x: s, y: n, z: o }
     });
   }
   zoomOut3(e, t = { scaleTo: 1.1 }) {
@@ -300,17 +328,18 @@ class g {
     });
   }
   switchColor3(e, t, s) {
-    const n = new h(e.material.color), a = new h(t), o = new h(), r = this.dummy({ ...s, easing: "sineIn" });
-    return r.onUpdate((c) => {
-      o.copy(n), o.lerp(a, c.value), e.material.color.setHex(o.getHex());
+    const n = new m(e.material.color), o = new m(t), a = new m(), r = this.dummy({ ...s, easing: "sineIn" });
+    return r.onUpdate((l) => {
+      a.copy(n), a.lerp(o, l.value), e.material.color.setHex(a.getHex());
     }), r;
   }
 }
-const G = new g();
+const N = new q();
 export {
-  A as animations,
-  P as htmlScreens,
-  U as physics,
-  W as pixiUI,
-  G as tweens
+  R as animations,
+  U as events,
+  W as htmlScreens,
+  G as physics,
+  H as pixiUI,
+  N as tweens
 };
