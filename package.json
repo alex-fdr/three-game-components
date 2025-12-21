@@ -21,7 +21,7 @@
         "prepublishOnly": "npm run build"
     },
     "devDependencies": {
-        "@alexfdr/three-game-core": "^1.0.24",
+        "@alexfdr/three-game-core": "^1.0.25",
         "@biomejs/biome": "^2.3.8",
         "@tweenjs/tween.js": "^22.0.0",
         "@types/three": "^0.181.0",
