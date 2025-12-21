@@ -6,8 +6,11 @@ import { Color } from 'three';
 import { ColorRepresentation } from 'three';
 import { Container } from 'pixi.js';
 import { Group } from '@tweenjs/tween.js';
+import { InputHandler as InputHandler_2 } from '@alexfdr/three-game-core';
+import { InputStatus as InputStatus_2 } from '@alexfdr/three-game-core';
 import { Material } from 'three';
 import { Object3D } from 'three';
+import { Signal } from '@alexfdr/three-game-core';
 import { Tween } from '@tweenjs/tween.js';
 import { Vector3 } from 'three';
 import { Vector3Like } from 'three';
@@ -48,6 +51,14 @@ export { BaseScreen }
 
 declare type CustomTween = Tween<any>;
 
+export declare class DragHandler implements InputHandler_2 {
+    pressed: boolean;
+    status: InputStatus_2;
+    down(e: Touch | MouseEvent): void;
+    move(e: Touch | MouseEvent): void;
+    up(e: Touch | MouseEvent): void;
+}
+
 declare class EventEmitter {
     pool: {
         [name: string]: Listener[];
@@ -70,6 +81,38 @@ declare class HtmlScreens {
 }
 
 export declare const htmlScreens: HtmlScreens;
+
+export declare const input: InputSystem;
+
+export declare interface InputHandler {
+    down(e: MouseEvent | Touch): void;
+    move(e: MouseEvent | Touch): void;
+    up(e: MouseEvent | Touch): void;
+    pressed?: boolean;
+    status: InputStatus;
+}
+
+export declare interface InputStatus {
+    currX: number;
+    currY: number;
+    prevX: number;
+    prevY: number;
+    deltaX: number;
+    deltaY: number;
+}
+
+declare class InputSystem {
+    enabled: boolean;
+    handler: InputHandler | null;
+    mouseEvents: readonly ["mousedown", "mousemove", "mouseup"];
+    touchEvents: readonly ["touchstart", "touchmove", "touchend"];
+    onDown: Signal<[InputStatus]>;
+    onUp: Signal<[InputStatus]>;
+    onMove: Signal<[InputStatus]>;
+    init(domElement: HTMLCanvasElement, handler: InputHandler): void;
+    toggle(status: boolean): void;
+    getEvent(e: TouchEvent | MouseEvent): Touch | MouseEvent;
+}
 
 /** biome-ignore-all lint/suspicious/noExplicitAny: We know nothing about argument types of a callback function */
 declare type Listener = (...args: any[]) => void;
