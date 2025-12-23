@@ -1,4 +1,4 @@
-import type { InputHandler, InputStatus } from '@alexfdr/three-game-core';
+import type { InputHandler, InputStatus } from '../input';
 
 export class DragHandler implements InputHandler {
     pressed = false;
